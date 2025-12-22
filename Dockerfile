@@ -12,6 +12,6 @@ WORKDIR /app
 COPY --from=build /app/.output /app
 
 EXPOSE 3000/tcp
-ENTRYPOINT [ "bun", "--bun", "--max-old-space-size=10240", "run", "/app/server/index.mjs" ]
+ENTRYPOINT [ "bun", "--bun", "run", "/app/server/index.mjs" ]
 
 
