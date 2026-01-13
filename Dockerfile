@@ -1,17 +1,17 @@
-FROM oven/bun:1.3.4-slim AS build
+FROM node:24.12 AS base
 WORKDIR /app
 
-COPY package.json bun.lock* ./
-RUN bun install --frozen-lockfile --ignore-scripts
+COPY package.json package-lock.json* ./
+RUN npm install
 COPY . .
-RUN bun --bun run build
+RUN npm run build
 
-FROM oven/bun:1.3.4-slim AS production
+FROM node:24.12 AS production
 WORKDIR /app
 
 COPY --from=build /app/.output /app
 
 EXPOSE 3000/tcp
-ENTRYPOINT [ "bun", "--bun", "run", "/app/server/index.mjs" ]
+ENTRYPOINT [ "npm", "run", "/app/server/index.mjs" ]
 
 
