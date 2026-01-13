@@ -1,17 +1,12 @@
 FROM node:24.12 AS base
 WORKDIR /app
 
-COPY package.json package-lock.json* ./
-RUN npm install
+FROM base AS builder
+COPY package.json ./
+RUN npm i --omit=dev
 COPY . .
 RUN npm run build
 
-FROM node:24.12 AS production
-WORKDIR /app
-
-COPY --from=build /app/.output /app
-
-EXPOSE 3000/tcp
-ENTRYPOINT [ "npm", "run", "/app/server/index.mjs" ]
-
-
+FROM base AS out
+COPY --from=builder /app/.output /app
+COPY run.sh .
